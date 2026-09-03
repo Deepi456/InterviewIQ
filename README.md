@@ -160,6 +160,24 @@ InterviewIQ/
 
    The backend will be available at: **`http://localhost:8000`**
 
+### Production Database on Render
+
+Local development uses the SQLite database at `data/interviewiq.db`. For Render,
+create a managed PostgreSQL database and add its connection string as the backend
+service environment variable `DATABASE_URL`. The application initializes the
+PostgreSQL schema on startup and all authentication, interviews, reports, and
+history use that persistent database. Do not commit the connection string or any
+other secrets; configure them in the Render environment settings.
+
+Recommended Render settings:
+
+```text
+Build Command: pip install -r backend/requirements.txt
+Start Command: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+DATABASE_URL: <Render PostgreSQL internal connection string>
+JWT_SECRET: <random value of at least 32 characters>
+```
+
 ### Frontend Setup
 
 1. **Open a new terminal and navigate to the frontend directory:**

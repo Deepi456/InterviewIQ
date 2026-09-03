@@ -5,15 +5,15 @@ Integrates AI-powered answer evaluation using LangChain + OpenAI.
 """
 
 import uuid
-import sqlite3
 import json
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 import logging
 from datetime import timezone
 from datetime import timedelta
 
 from app.config import settings
+from app.database import get_connection
 from app.services.question_repository import Question
 
 logger = logging.getLogger(__name__)
@@ -69,11 +69,9 @@ class InterviewService:
         self.engine = question_engine
         self.evaluation_service = evaluation_service
 
-    def _get_connection(self) -> sqlite3.Connection:
+    def _get_connection(self) -> Any:
         """Get database connection."""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        return conn
+        return get_connection(self.db_path)
 
     def _get_question(self, question_id: str, session) -> Optional[Question]:
         question = self.repo.get_question(question_id)

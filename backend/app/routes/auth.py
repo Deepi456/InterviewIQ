@@ -1,6 +1,5 @@
 """Authentication endpoints."""
 
-import sqlite3
 import uuid
 
 import re
@@ -8,6 +7,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.auth import create_access_token, get_current_user, hash_password, verify_password
 from app.database import get_connection
+try:
+    from psycopg2 import IntegrityError as PostgresIntegrityError
+except ImportError:
+    PostgresIntegrityError = None
+from sqlite3 import IntegrityError as SqliteIntegrityError
 from app.models.auth_models import AuthResponse, LoginRequest, RegisterRequest, UserResponse
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -34,7 +38,7 @@ def register(request: RegisterRequest):
             (user_id, name, email, hash_password(request.password)),
         )
         conn.commit()
-    except sqlite3.IntegrityError as exc:
+    except tuple(error for error in (SqliteIntegrityError, PostgresIntegrityError) if error) as exc:
         conn.rollback()
         raise HTTPException(status_code=409, detail="An account with that email already exists") from exc
     finally:

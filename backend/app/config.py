@@ -45,6 +45,7 @@ class Settings:
     jwt_expire_minutes: int = int(os.getenv("JWT_EXPIRE_MINUTES", "1440"))
 
     # Application
+    app_env: str = os.getenv("APP_ENV", "development").lower()
     app_name: str = "InterviewIQ"
     app_version: str = "0.1.0"
 

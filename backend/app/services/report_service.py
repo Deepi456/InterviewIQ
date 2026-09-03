@@ -4,9 +4,8 @@ Analyzes interview results and generates personalized preparation reports using 
 """
 
 import json
-import sqlite3
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 import logging
 
 from app.models.interview_models import (
@@ -21,6 +20,7 @@ from app.models.interview_models import (
 )
 
 from app.config import settings
+from app.database import get_connection
 from app.services.gemini_provider import get_gemini_provider
 from app.services.interview_service import determine_question_result
 
@@ -43,11 +43,9 @@ class ReportService:
         self.gemini_api_key = getattr(settings, "gemini_api_key", None) or os.getenv("GEMINI_API_KEY", "")
         self.api_key = self.gemini_api_key
 
-    def _get_connection(self) -> sqlite3.Connection:
+    def _get_connection(self) -> Any:
         """Get database connection."""
-        conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row
-        return conn
+        return get_connection(self.db_path)
 
     def build_interview_report(
         self,

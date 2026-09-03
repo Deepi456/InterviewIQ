@@ -2,14 +2,13 @@
 
 import json
 import logging
-import sqlite3
 import threading
 import time
 import uuid
 from typing import Dict, List, Optional
 
 from app.config import settings
-from app.database import DB_PATH
+from app.database import DB_PATH, get_connection
 from app.services.gemini_provider import (
     GeminiProvider,
     ProviderFailure,
@@ -259,8 +258,7 @@ Respond to the latest user message. Do not invent missing context."""
         if not session_id:
             return None
 
-        conn = sqlite3.connect(self.database_path)
-        conn.row_factory = sqlite3.Row
+        conn = get_connection(self.database_path)
         try:
             session = conn.execute(
                 "SELECT job_role, skills_json, total_questions, status FROM interview_sessions WHERE session_id = ? AND user_id = ?",

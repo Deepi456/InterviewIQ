@@ -39,6 +39,8 @@ def startup_event():
         logger.info("✓ Database initialized successfully")
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")
+        if settings.app_env == "production":
+            raise
 
 # Include routes
 app.include_router(health.router)
