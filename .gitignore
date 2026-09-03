@@ -1,0 +1,33 @@
+# Environment variables
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+ENV/
+env/
+
+# Frontend
+node_modules/
+dist/
+npm-debug.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite3
+
+# Reports and data (generated)
+reports/generated/
+data/generated/
